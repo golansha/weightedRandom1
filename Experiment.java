@@ -2,17 +2,23 @@ import java.util.Arrays;
 import java.util.Random;
 
 public class Experiment {
-    public static void main(String []args){
-        int corpusSize = 1000;
-        int numberOfQueries = 1000000;
-        int vectorSize = 30;
-        Experiment experiment = new Experiment(corpusSize, numberOfQueries, vectorSize, new ScoreCalculatorNoRandomRotation());
-        int[] result = experiment.runExperiment();
-        if (experiment.testChiSquare(1105.916, result)){
-            System.out.println("The uniform distribution hypothesis was rejected");
-        }
-        else{
-            System.out.println("The uniform distribution hypothesis was accepted");
+    public static void main(String []args) {
+        int[] corpusSizes = {10, 100, 1000, 10000};
+        double[] criticalValues = {21.666, 134.6416, 1105.916, 36028.797};
+        int numberOfQueries = 10000000;
+        for (int i = 0; i< corpusSizes.length; i++) {
+            int corpusSize = corpusSizes[i];
+            double criticalValue = criticalValues[i];
+            boolean uniformRejected = true;
+            for (int vectorSize = 2; uniformRejected ; vectorSize+=5) {
+                Experiment experiment = new Experiment(corpusSize, numberOfQueries, vectorSize, new FullScoreCalculator());
+                int[] result = experiment.runExperiment();
+                if (experiment.testChiSquare(criticalValue, result)) {
+                    System.out.println("The uniform distribution hypothesis was rejected");
+                } else {
+                    System.out.println("The uniform distribution hypothesis was accepted");
+                }
+            }
         }
     }
     int corpusSize;
