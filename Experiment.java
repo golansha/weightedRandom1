@@ -5,8 +5,8 @@ public class Experiment {
     public static void main(String []args){
         int corpusSize = 1000;
         int numberOfQueries = 1000000;
-        int vectorSize = 15;
-        Experiment experiment = new Experiment(corpusSize, numberOfQueries, vectorSize);
+        int vectorSize = 30;
+        Experiment experiment = new Experiment(corpusSize, numberOfQueries, vectorSize, new ScoreCalculatorNoRandomRotation());
         int[] result = experiment.runExperiment();
         if (experiment.testChiSquare(1105.916, result)){
             System.out.println("The uniform distribution hypothesis was rejected");
@@ -20,19 +20,16 @@ public class Experiment {
     int vectorSize;
     DocumentsCorpus corpus;
     Random rand = new Random();
-    public Experiment(int corpusSize, int numberOfQueries, int vectorSize){
+    public Experiment(int corpusSize, int numberOfQueries, int vectorSize, ScoreCalculator scoreCalculator){
         this.corpusSize = corpusSize;
         this.vectorSize = vectorSize;
         this.numberOfQueries = numberOfQueries;
-        corpus = new DocumentsCorpus(corpusSize, vectorSize);
+        corpus = new DocumentsCorpus(corpusSize, vectorSize, scoreCalculator);
     }
 
     public int[] runExperiment(){
         int[] results = new int[corpusSize];
         for (int i = 0; i<numberOfQueries; i++){
-//            if (i%100 ==0){
-//                System.out.println("i=" +i);
-//            }
             QueryVector queryVector = new QueryVector(vectorSize);
             results[corpus.getIndexOfSelectedDocument(queryVector)]++;
         }

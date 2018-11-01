@@ -2,8 +2,10 @@ public class DocumentsCorpus {
     int size;
     int vectorSize;
     DocumentVector[] documents;
-    public DocumentsCorpus(int size, int vectorSize){
+    ScoreCalculator calculator;
+    public DocumentsCorpus(int size, int vectorSize, ScoreCalculator calculator){
         this.size = size;
+        this.calculator = calculator;
         documents = new DocumentVector[size];
         for (int i = 0; i<size; i++) {
             documents[i] = new DocumentVector(vectorSize);
@@ -13,7 +15,7 @@ public class DocumentsCorpus {
         int result =0;
         double maxScore = 0;
         for (int i = 0; i< size; i++){
-            double curScore = documents[i].getScore(query);
+            double curScore = calculator.getScore(documents[i],query);
             if (curScore > maxScore){
                 maxScore = curScore;
                 result = i;
